@@ -1,0 +1,2489 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Italian Learning Tracker - 10 Minutes Daily</title>
+    <style>
+        :root {
+            --color-primary: #009246;
+            --color-secondary: #CE2B37;
+            --color-accent: #F1F2F0;
+            --color-bg: #FAFAFA;
+            --color-text: #1a1a1a;
+            --color-card: #ffffff;
+            --color-success: #4CAF50;
+            --color-border: #e0e0e0;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: var(--color-bg);
+            color: var(--color-text);
+            line-height: 1.6;
+            padding: 10px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        header {
+            background: linear-gradient(135deg, var(--color-primary), #00824d);
+            color: white;
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        header h1 {
+            font-size: 1.5rem;
+            margin-bottom: 8px;
+        }
+
+        header p {
+            opacity: 0.95;
+            font-size: 0.95rem;
+        }
+
+        .week-selector {
+            background: var(--color-card);
+            padding: 15px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        }
+
+        .week-selector label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 10px;
+            color: var(--color-text);
+            font-size: 0.95rem;
+        }
+
+        select {
+            width: 100%;
+            padding: 12px;
+            font-size: 1rem;
+            border: 2px solid var(--color-border);
+            border-radius: 8px;
+            background: white;
+            cursor: pointer;
+            transition: border-color 0.3s;
+        }
+
+        select:focus {
+            outline: none;
+            border-color: var(--color-primary);
+        }
+
+        .phase-indicator {
+            display: inline-block;
+            padding: 6px 12px;
+            background: var(--color-accent);
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            margin-top: 10px;
+            color: var(--color-primary);
+        }
+
+        .week-content {
+            background: var(--color-card);
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            margin-bottom: 20px;
+        }
+
+        .week-overview {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            border-left: 4px solid var(--color-primary);
+        }
+
+        .week-overview h3 {
+            color: var(--color-primary);
+            margin-bottom: 12px;
+            font-size: 1.1rem;
+        }
+
+        .week-overview ul {
+            list-style: none;
+            padding-left: 0;
+            font-size: 0.9rem;
+        }
+
+        .week-overview li {
+            padding: 6px 0;
+            padding-left: 24px;
+            position: relative;
+        }
+
+        .week-overview li:before {
+            content: "✓";
+            position: absolute;
+            left: 0;
+            color: var(--color-primary);
+            font-weight: bold;
+        }
+
+        .quiz-btn {
+            width: 100%;
+            padding: 12px;
+            background: var(--color-secondary);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 0.95rem;
+            margin: 15px 0;
+            transition: background 0.3s;
+        }
+
+        .quiz-btn:hover {
+            background: #b32230;
+        }
+
+        .day-card {
+            border: 2px solid var(--color-border);
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 15px;
+            transition: all 0.3s;
+            background: white;
+        }
+
+        .day-card.completed {
+            border-color: var(--color-success);
+            background: #f1f8f4;
+        }
+
+        .day-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .day-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: var(--color-text);
+        }
+
+        .complete-btn {
+            padding: 8px 16px;
+            background: var(--color-primary);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: background 0.3s;
+            font-size: 0.85rem;
+        }
+
+        .complete-btn:hover {
+            background: #00824d;
+        }
+
+        .complete-btn.completed {
+            background: var(--color-success);
+        }
+
+        .activity-steps {
+            background: #f8f9fa;
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+        }
+
+        .activity-steps h4 {
+            color: var(--color-primary);
+            margin-bottom: 10px;
+            font-size: 0.95rem;
+        }
+
+        .step {
+            padding: 6px 0;
+            padding-left: 24px;
+            position: relative;
+            font-size: 0.85rem;
+        }
+
+        .step:before {
+            content: "▸";
+            position: absolute;
+            left: 8px;
+            color: var(--color-secondary);
+            font-weight: bold;
+        }
+
+        .resource-link {
+            display: inline-block;
+            padding: 8px 12px;
+            background: var(--color-primary);
+            color: white;
+            text-decoration: none;
+            border-radius: 6px;
+            margin: 5px 5px 5px 0;
+            font-size: 0.8rem;
+            transition: background 0.3s;
+        }
+
+        .resource-link:hover {
+            background: #00824d;
+        }
+
+        .resource-link.secondary {
+            background: var(--color-secondary);
+        }
+
+        .resource-link.secondary:hover {
+            background: #b32230;
+        }
+
+        .progress-section {
+            background: var(--color-card);
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            margin-bottom: 20px;
+        }
+
+        .progress-section h2 {
+            font-size: 1.2rem;
+            margin-bottom: 15px;
+        }
+
+        .progress-bar-container {
+            background: #e0e0e0;
+            height: 30px;
+            border-radius: 15px;
+            overflow: hidden;
+            margin: 15px 0;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, var(--color-primary), #00824d);
+            transition: width 0.5s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+            font-size: 0.85rem;
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 12px;
+            margin-top: 15px;
+        }
+
+        .stat-card {
+            background: #f8f9fa;
+            padding: 12px;
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: var(--color-primary);
+        }
+
+        .stat-label {
+            font-size: 0.8rem;
+            color: #666;
+            margin-top: 5px;
+        }
+
+        .notes-section {
+            margin-top: 15px;
+        }
+
+        .notes-section textarea {
+            width: 100%;
+            min-height: 80px;
+            padding: 10px;
+            border: 2px solid var(--color-border);
+            border-radius: 8px;
+            font-family: inherit;
+            font-size: 0.85rem;
+            resize: vertical;
+        }
+
+        .notes-section textarea:focus {
+            outline: none;
+            border-color: var(--color-primary);
+        }
+
+        .quick-links {
+            background: #fff3cd;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            border-left: 4px solid #ffc107;
+        }
+
+        .quick-links h3 {
+            color: #856404;
+            margin-bottom: 12px;
+            font-size: 1rem;
+        }
+
+        .flashcard-section {
+            background: var(--color-card);
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            margin-bottom: 20px;
+        }
+
+        .flashcard {
+            background: white;
+            border: 3px solid var(--color-primary);
+            border-radius: 12px;
+            padding: 40px 20px;
+            min-height: 200px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: transform 0.3s;
+            margin-bottom: 20px;
+        }
+
+        .flashcard:active {
+            transform: scale(0.98);
+        }
+
+        .flashcard-text {
+            font-size: 1.8rem;
+            font-weight: 600;
+            text-align: center;
+            color: var(--color-text);
+            margin-bottom: 20px;
+        }
+
+        .flashcard-buttons {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            justify-content: center;
+            margin-top: 20px;
+        }
+
+        .flashcard-btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 0.9rem;
+        }
+
+        .flashcard-btn.again {
+            background: #e74c3c;
+            color: white;
+        }
+
+        .flashcard-btn.hard {
+            background: #f39c12;
+            color: white;
+        }
+
+        .flashcard-btn.good {
+            background: #27ae60;
+            color: white;
+        }
+
+        .flashcard-btn.easy {
+            background: #2ecc71;
+            color: white;
+        }
+
+        .speech-btn {
+            background: var(--color-primary);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            font-size: 1.5rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin: 0 5px;
+        }
+
+        .speech-btn:hover {
+            background: #00824d;
+            transform: scale(1.1);
+        }
+
+        .speech-btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+
+        .recognition-result {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 15px;
+            border-left: 4px solid var(--color-primary);
+        }
+
+        .recognition-match {
+            color: var(--color-success);
+            font-weight: 600;
+        }
+
+        .recognition-nomatch {
+            color: var(--color-secondary);
+            font-weight: 600;
+        }
+
+        .gamification-section {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        .xp-container {
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-top: 15px;
+        }
+
+        .xp-card {
+            text-align: center;
+            padding: 15px;
+            background: rgba(255,255,255,0.15);
+            border-radius: 10px;
+            min-width: 120px;
+        }
+
+        .xp-number {
+            font-size: 2rem;
+            font-weight: bold;
+        }
+
+        .xp-label {
+            font-size: 0.85rem;
+            opacity: 0.9;
+            margin-top: 5px;
+        }
+
+        .level-bar {
+            background: rgba(255,255,255,0.3);
+            height: 20px;
+            border-radius: 10px;
+            overflow: hidden;
+            margin: 10px 0;
+        }
+
+        .level-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #ffd700, #ffed4e);
+            transition: width 0.5s ease;
+        }
+
+        .badges {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+            flex-wrap: wrap;
+        }
+
+        .badge {
+            background: rgba(255,255,255,0.2);
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .badge.earned {
+            background: rgba(255,215,0,0.3);
+            border: 2px solid #ffd700;
+        }
+
+        .phrase-of-day {
+            background: linear-gradient(135deg, var(--color-primary), #00824d);
+            color: white;
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .phrase-of-day h3 {
+            margin-bottom: 15px;
+            font-size: 1.2rem;
+        }
+
+        .phrase-text {
+            font-size: 1.8rem;
+            font-weight: 600;
+            margin: 10px 0;
+        }
+
+        .phrase-translation {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+
+        #quizModal {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.5);
+            padding: 20px;
+            z-index: 999;
+            overflow-y: auto;
+        }
+
+        .quiz-container {
+            max-width: 500px;
+            margin: 40px auto;
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+        }
+
+        #quizTitle {
+            color: var(--color-primary);
+            margin-bottom: 20px;
+            font-size: 1.3rem;
+        }
+
+        .quiz-question {
+            margin-bottom: 20px;
+        }
+
+        .quiz-question-text {
+            font-weight: 600;
+            margin-bottom: 10px;
+            font-size: 0.95rem;
+        }
+
+        .quiz-option {
+            display: block;
+            font-size: 0.9rem;
+            padding: 5px 0;
+        }
+
+        .quiz-option input {
+            margin-right: 8px;
+        }
+
+        .quiz-buttons {
+            margin-top: 20px;
+            display: flex;
+            justify-content: space-between;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .quiz-buttons button {
+            flex: 1;
+            min-width: 120px;
+        }
+
+        .quiz-close-btn {
+            background: #999 !important;
+        }
+
+        #quizResult {
+            margin-top: 15px;
+            font-weight: 600;
+            font-size: 1.1rem;
+            text-align: center;
+            color: var(--color-primary);
+        }
+
+        @media (max-width: 768px) {
+            header h1 {
+                font-size: 1.3rem;
+            }
+            
+            .day-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .stats {
+                grid-template-columns: 1fr;
+            }
+
+            .quiz-container {
+                margin: 20px auto;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🇮🇹 Italian Learning Tracker</h1>
+            <p>10 minutes daily • Speaking &amp; Listening Focus</p>
+        </header>
+
+        <div class="phrase-of-day" id="phraseOfDay">
+            <h3>✨ Phrase of the Day</h3>
+            <div class="phrase-text" id="dailyPhraseIt">...</div>
+            <div class="phrase-translation" id="dailyPhraseEn">...</div>
+            <button class="speech-btn" onclick="speakPhrase()" title="Listen">🔊</button>
+        </div>
+
+        <div class="gamification-section">
+            <h2 style="margin-bottom: 15px;">🏆 Your Progress</h2>
+            <div class="xp-container">
+                <div class="xp-card">
+                    <div class="xp-number" id="xpPoints">0</div>
+                    <div class="xp-label">XP Points</div>
+                </div>
+                <div class="xp-card">
+                    <div class="xp-number" id="userLevel">1</div>
+                    <div class="xp-label" id="levelName">Principiante</div>
+                </div>
+                <div class="xp-card">
+                    <div class="xp-number" id="currentStreak">0</div>
+                    <div class="xp-label">🔥 Day Streak</div>
+                </div>
+            </div>
+            <div class="level-bar">
+                <div class="level-fill" id="levelProgress"></div>
+            </div>
+            <div style="text-align: center; font-size: 0.85rem; opacity: 0.9;">
+                <span id="xpToNext">0</span> XP to next level
+            </div>
+            <div class="badges" id="badgesContainer"></div>
+        </div>
+
+        <div class="flashcard-section" id="flashcardSection" style="display: none;">
+            <h2>🎴 Flashcard Review</h2>
+            <p style="margin-bottom: 15px; font-size: 0.9rem;">Cards due: <span id="dueCount">0</span></p>
+            <div class="flashcard" id="flashcard" onclick="flipCard()">
+                <div class="flashcard-text" id="flashcardText">Click to start</div>
+                <button class="speech-btn" onclick="event.stopPropagation(); speakFlashcard()" title="Listen">🔊</button>
+                <button class="speech-btn" onclick="event.stopPropagation(); recognizeFlashcard()" title="Speak" id="micBtn">🎤</button>
+            </div>
+            <div id="recognitionResult"></div>
+            <div class="flashcard-buttons" id="flashcardButtons" style="display: none;">
+                <button class="flashcard-btn again" onclick="rateCard(1)">Again</button>
+                <button class="flashcard-btn hard" onclick="rateCard(2)">Hard</button>
+                <button class="flashcard-btn good" onclick="rateCard(3)">Good</button>
+                <button class="flashcard-btn easy" onclick="rateCard(4)">Easy</button>
+            </div>
+        </div>
+
+        <div class="progress-section">
+            <h2>Your Progress</h2>
+            <div class="progress-bar-container">
+                <div class="progress-bar" id="progressBar">0%</div>
+            </div>
+            <div class="stats">
+                <div class="stat-card">
+                    <div class="stat-number" id="daysCompleted">0</div>
+                    <div class="stat-label">Days Completed</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" id="totalMinutes">0</div>
+                    <div class="stat-label">Total Minutes</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" id="flashcardsLearned">0</div>
+                    <div class="stat-label">Cards Learned</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="week-selector" style="margin-bottom: 10px;">
+            <label for="userSelect">👤 Current User:</label>
+            <select id="userSelect" style="margin-bottom: 10px;">
+                <option value="">Select user...</option>
+            </select>
+            <div style="display: flex; gap: 10px; margin-top: 10px;">
+                <input type="text" id="newUserInput" placeholder="Enter new username" style="flex: 1; padding: 10px; border: 2px solid var(--color-border); border-radius: 8px;">
+                <button class="complete-btn" onclick="createUser()" style="white-space: nowrap;">Create User</button>
+            </div>
+        </div>
+
+        <div class="week-selector">
+            <label for="weekSelect">Select Your Week:</label>
+            <select id="weekSelect">
+                <optgroup label="PHASE 1: Foundations (Weeks 1-8)">
+                    <option value="1">Week 1-2: Sounds &amp; Greetings</option>
+                    <option value="3">Week 3-4: Talking About Yourself</option>
+                    <option value="5">Week 5-6: Daily Life &amp; Routine</option>
+                    <option value="7">Week 7-8: Food, Drink &amp; Restaurant</option>
+                </optgroup>
+                <optgroup label="PHASE 2: Building Blocks (Weeks 9-16)">
+                    <option value="9">Week 9-10: Talking About the Past</option>
+                    <option value="11">Week 11-12: Making Plans &amp; Expressing Wants</option>
+                    <option value="13">Week 13-14: Directions, Travel &amp; Getting Around</option>
+                    <option value="15">Week 15-16: Opinions, Feelings &amp; Descriptions</option>
+                </optgroup>
+                <optgroup label="PHASE 3: Fluency Building (Weeks 17-24)">
+                    <option value="17">Week 17-18: Storytelling &amp; Narration</option>
+                    <option value="19">Week 19-20: Social Situations &amp; Small Talk</option>
+                    <option value="21">Week 21-22: Health, Sport &amp; Lifestyle</option>
+                    <option value="23">Week 23-24: Consolidation &amp; Real-World Practice</option>
+                </optgroup>
+            </select>
+            <div class="phase-indicator" id="phaseIndicator">Phase 1: Foundations</div>
+        </div>
+
+        <div id="weekContent" class="week-content"></div>
+    </div>
+
+    <div id="quizModal">
+        <div class="quiz-container">
+            <h3 id="quizTitle">Week Quiz</h3>
+            <div id="quizContent"></div>
+            <div class="quiz-buttons">
+                <button class="complete-btn" onclick="checkQuiz()">Check Answers</button>
+                <button class="complete-btn quiz-close-btn" onclick="closeQuiz()">Close</button>
+            </div>
+            <p id="quizResult"></p>
+        </div>
+    </div>
+
+    <script>
+        const dailyPhrases = [
+            { it: "Buongiorno! Come stai?", en: "Good morning! How are you?" },
+            { it: "Mi chiamo...", en: "My name is..." },
+            { it: "Piacere di conoscerti", en: "Nice to meet you" },
+            { it: "Grazie mille", en: "Thank you very much" },
+            { it: "Scusa, non capisco", en: "Sorry, I don't understand" },
+            { it: "Parli inglese?", en: "Do you speak English?" },
+            { it: "Dov'è il bagno?", en: "Where is the bathroom?" },
+            { it: "Quanto costa?", en: "How much does it cost?" },
+            { it: "Vorrei un caffè, per favore", en: "I would like a coffee, please" },
+            { it: "Mi piace molto", en: "I like it a lot" },
+            { it: "Non mi piace", en: "I don't like it" },
+            { it: "Che ore sono?", en: "What time is it?" },
+            { it: "Sono stanco", en: "I'm tired" },
+            { it: "Ho fame", en: "I'm hungry" },
+            { it: "Ho sete", en: "I'm thirsty" },
+            { it: "A domani!", en: "See you tomorrow!" },
+            { it: "Buona giornata", en: "Have a good day" },
+            { it: "Mi dispiace", en: "I'm sorry" },
+            { it: "Non c'è problema", en: "No problem" },
+            { it: "Ci vediamo dopo", en: "See you later" }
+        ];
+
+        let currentPhrase = null;
+        let recognition = null;
+        let currentFlashcard = null;
+        let flashcardDeck = [];
+        let isFlashcardFlipped = false;
+        let gamificationData = JSON.parse(localStorage.getItem('gamificationData')) || {
+            xp: 0,
+            level: 1,
+            badges: []
+        };
+
+        const levels = [
+            { level: 1, name: "Principiante", xpRequired: 0 },
+            { level: 2, name: "Studente", xpRequired: 100 },
+            { level: 3, name: "Viaggiatore", xpRequired: 300 },
+            { level: 4, name: "Conversatore", xpRequired: 600 },
+            { level: 5, name: "Esperto", xpRequired: 1000 },
+            { level: 6, name: "Maestro", xpRequired: 1500 }
+        ];
+
+        const badges = [
+            { id: "first_week", name: "First Week 🏅", requirement: () => Object.keys(completedDays).length >= 7 },
+            { id: "seven_streak", name: "7-Day Streak 🔥", requirement: () => calculateStreak() >= 7 },
+            { id: "first_quiz", name: "Quiz Master ⭐", requirement: () => localStorage.getItem('quiz_week1') === 'passed' },
+            { id: "phase1", name: "Phase 1 Graduate 🎓", requirement: () => Object.keys(completedDays).filter(k => k.startsWith('week1_') || k.startsWith('week3_') || k.startsWith('week5_') || k.startsWith('week7_')).length >= 28 },
+            { id: "flashcard_50", name: "50 Cards Learned 📚", requirement: () => {
+                const cards = JSON.parse(localStorage.getItem('flashcards')) || [];
+                return cards.filter(c => c.interval >= 1).length >= 50;
+            }},
+            { id: "perfect_week", name: "Perfect Week ✨", requirement: () => {
+                const thisWeek = [];
+                for (let i = 0; i < 7; i++) {
+                    const d = new Date();
+                    d.setDate(d.getDate() - i);
+                    thisWeek.push(d.toDateString());
+                }
+                return thisWeek.every(date => Object.values(completedDays).some(cd => new Date(cd).toDateString() === date));
+            }}
+        ];
+
+        function initSpeechRecognition() {
+            if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
+                const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+                recognition = new SpeechRecognition();
+                recognition.lang = 'it-IT';
+                recognition.continuous = false;
+                recognition.interimResults = false;
+            } else {
+                console.log('Speech recognition not supported');
+                document.getElementById('micBtn').style.display = 'none';
+            }
+            
+            speechSynthesis.onvoiceschanged = initVoices;
+            initVoices();
+        }
+
+        let italianVoice = null;
+
+        function initVoices() {
+            const voices = speechSynthesis.getVoices();
+            
+            const preferredVoices = [
+                "Google italiano",
+                "Microsoft Elsa",
+                "Microsoft Cosimo",
+                "Samantha",
+                "Alice",
+                "Luca",
+                "Paolo"
+            ];
+
+            italianVoice = preferredVoices
+                .map(name => voices.find(v => v.name.includes(name) && v.lang.startsWith("it")))
+                .find(v => v !== undefined);
+
+            if (!italianVoice) {
+                italianVoice = voices.find(v => v.lang === "it-IT") ||
+                              voices.find(v => v.lang.startsWith("it-")) ||
+                              voices.find(v => /italian/i.test(v.name));
+            }
+
+            if (italianVoice) {
+                console.log("Selected voice:", italianVoice.name);
+            }
+        }
+
+        function speakItalian(text, rate = 0.75) {
+            if (!text || !window.speechSynthesis) return;
+            
+            if (!italianVoice) {
+                initVoices();
+            }
+            
+            if (!italianVoice) {
+                console.warn("No Italian voice available");
+                return;
+            }
+
+            speechSynthesis.cancel();
+
+            const utterance = new SpeechSynthesisUtterance(text);
+            utterance.lang = "it-IT";
+            utterance.voice = italianVoice;
+            utterance.rate = rate;
+            utterance.pitch = 1.0;
+            utterance.volume = 1.0;
+
+            speechSynthesis.speak(utterance);
+        }
+
+        function showDailyPhrase() {
+            const today = new Date().toDateString();
+            const savedDate = localStorage.getItem('phraseDate');
+            let phraseIndex = parseInt(localStorage.getItem('phraseIndex')) || 0;
+            
+            if (savedDate !== today) {
+                phraseIndex = Math.floor(Math.random() * dailyPhrases.length);
+                localStorage.setItem('phraseDate', today);
+                localStorage.setItem('phraseIndex', phraseIndex);
+            }
+            
+            currentPhrase = dailyPhrases[phraseIndex];
+            document.getElementById('dailyPhraseIt').textContent = currentPhrase.it;
+            document.getElementById('dailyPhraseEn').textContent = currentPhrase.en;
+        }
+
+        function speakPhrase() {
+            if (!currentPhrase || !currentPhrase.it) return;
+
+            const phrase = currentPhrase.it;
+            speakItalian(phrase, 0.65);
+
+            setTimeout(() => speakItalian(phrase, 0.65), 1600);
+        }
+
+        function updateGamification() {
+            const data = gamificationData;
+            document.getElementById('xpPoints').textContent = data.xp;
+            
+            let currentLevelData = levels.find(l => data.xp >= l.xpRequired && data.xp < (levels[l.level] ? levels[l.level].xpRequired : Infinity));
+            if (!currentLevelData) currentLevelData = levels[levels.length - 1];
+            
+            data.level = currentLevelData.level;
+            document.getElementById('userLevel').textContent = data.level;
+            document.getElementById('levelName').textContent = currentLevelData.name;
+            
+            const nextLevel = levels.find(l => l.level === data.level + 1);
+            if (nextLevel) {
+                const xpInLevel = data.xp - currentLevelData.xpRequired;
+                const xpNeeded = nextLevel.xpRequired - currentLevelData.xpRequired;
+                const progress = (xpInLevel / xpNeeded) * 100;
+                document.getElementById('levelProgress').style.width = progress + '%';
+                document.getElementById('xpToNext').textContent = nextLevel.xpRequired - data.xp;
+            } else {
+                document.getElementById('levelProgress').style.width = '100%';
+                document.getElementById('xpToNext').textContent = '0';
+            }
+            
+            badges.forEach(badge => {
+                if (badge.requirement() && !data.badges.includes(badge.id)) {
+                    data.badges.push(badge.id);
+                    addXP(25);
+                }
+            });
+            
+            const badgesContainer = document.getElementById('badgesContainer');
+            badgesContainer.innerHTML = badges.map(badge => {
+                const earned = data.badges.includes(badge.id);
+                return `<div class="badge ${earned ? 'earned' : ''}">${badge.name}</div>`;
+            }).join('');
+            
+            localStorage.setItem('gamificationData', JSON.stringify(data));
+        }
+
+        function addXP(amount) {
+            gamificationData.xp += amount;
+            saveUserData();
+            updateGamification();
+        }
+
+        function calculateStreak() {
+            let streak = 0;
+            const sortedDates = Object.values(completedDays)
+                .map(d => new Date(d).toDateString())
+                .sort((a, b) => new Date(b) - new Date(a));
+            
+            for (let i = 0; i < 30; i++) {
+                const checkDate = new Date();
+                checkDate.setDate(checkDate.getDate() - i);
+                if (sortedDates.includes(checkDate.toDateString())) {
+                    streak++;
+                } else if (i > 0) {
+                    break;
+                }
+            }
+            return streak;
+        }
+
+        function initFlashcards() {
+            let cards = JSON.parse(localStorage.getItem(userKey('flashcards'))) || [];
+            
+            const basicCards = [
+                { italian: "Ciao", english: "Hello/Bye" },
+                { italian: "Grazie", english: "Thank you" },
+                { italian: "Per favore", english: "Please" },
+                { italian: "Scusa", english: "Excuse me/Sorry" },
+                { italian: "Sì", english: "Yes" },
+                { italian: "No", english: "No" },
+                { italian: "Buongiorno", english: "Good morning" },
+                { italian: "Buonasera", english: "Good evening" },
+                { italian: "Buonanotte", english: "Good night" },
+                { italian: "Come stai?", english: "How are you?" },
+                { italian: "Sto bene", english: "I'm well" },
+                { italian: "Mi chiamo...", english: "My name is..." },
+                { italian: "Piacere", english: "Pleased to meet you" },
+                { italian: "Arrivederci", english: "Goodbye" },
+                { italian: "A presto", english: "See you soon" },
+                { italian: "Prego", english: "You're welcome" },
+                { italian: "Mi dispiace", english: "I'm sorry" },
+                { italian: "Non capisco", english: "I don't understand" },
+                { italian: "Parli inglese?", english: "Do you speak English?" },
+                { italian: "Come ti chiami?", english: "What's your name?" },
+                { italian: "Sono", english: "I am" },
+                { italian: "Sei", english: "You are (informal)" },
+                { italian: "È", english: "He/she is" },
+                { italian: "Siamo", english: "We are" },
+                { italian: "Siete", english: "You are (plural)" },
+                { italian: "Sono", english: "They are" },
+                { italian: "Ho", english: "I have" },
+                { italian: "Hai", english: "You have" },
+                { italian: "Ha", english: "He/she has" },
+                { italian: "Abbiamo", english: "We have" },
+                { italian: "Avete", english: "You have (plural)" },
+                { italian: "Hanno", english: "They have" },
+                { italian: "Uno", english: "One" },
+                { italian: "Due", english: "Two" },
+                { italian: "Tre", english: "Three" },
+                { italian: "Quattro", english: "Four" },
+                { italian: "Cinque", english: "Five" },
+                { italian: "Sei", english: "Six" },
+                { italian: "Sette", english: "Seven" },
+                { italian: "Otto", english: "Eight" },
+                { italian: "Nove", english: "Nine" },
+                { italian: "Dieci", english: "Ten" },
+                { italian: "Venti", english: "Twenty" },
+                { italian: "Trenta", english: "Thirty" },
+                { italian: "Inglese", english: "English" },
+                { italian: "Italiano", english: "Italian" },
+                { italian: "Francese", english: "French" },
+                { italian: "Spagnolo", english: "Spanish" },
+                { italian: "Tedesco", english: "German" },
+                { italian: "Inghilterra", english: "England" },
+                { italian: "Italia", english: "Italy" },
+                { italian: "Francia", english: "France" },
+                { italian: "Spagna", english: "Spain" },
+                { italian: "Madre", english: "Mother" },
+                { italian: "Padre", english: "Father" },
+                { italian: "Fratello", english: "Brother" },
+                { italian: "Sorella", english: "Sister" },
+                { italian: "Figlio", english: "Son" },
+                { italian: "Figlia", english: "Daughter" },
+                { italian: "Nonno", english: "Grandfather" },
+                { italian: "Nonna", english: "Grandmother" },
+                { italian: "Zio", english: "Uncle" },
+                { italian: "Zia", english: "Aunt" },
+                { italian: "Cugino", english: "Cousin (male)" },
+                { italian: "Cugina", english: "Cousin (female)" },
+                { italian: "Insegnante", english: "Teacher" },
+                { italian: "Studente", english: "Student" },
+                { italian: "Medico", english: "Doctor" },
+                { italian: "Ingegnere", english: "Engineer" },
+                { italian: "Allenatore", english: "Coach" },
+                { italian: "Infermiere", english: "Nurse" },
+                { italian: "Cuoco", english: "Cook" },
+                { italian: "Parlare", english: "To speak" },
+                { italian: "Mangiare", english: "To eat" },
+                { italian: "Lavorare", english: "To work" },
+                { italian: "Abitare", english: "To live" },
+                { italian: "Studiare", english: "To study" },
+                { italian: "Ascoltare", english: "To listen" },
+                { italian: "Guardare", english: "To watch" },
+                { italian: "Camminare", english: "To walk" },
+                { italian: "Correre", english: "To run" },
+                { italian: "Dormire", english: "To sleep" },
+                { italian: "Partire", english: "To leave" },
+                { italian: "Capire", english: "To understand" },
+                { italian: "Finire", english: "To finish" },
+                { italian: "Preferire", english: "To prefer" },
+                { italian: "Bere", english: "To drink" },
+                { italian: "Prendere", english: "To take" },
+                { italian: "Leggere", english: "To read" },
+                { italian: "Scrivere", english: "To write" },
+                { italian: "Aprire", english: "To open" },
+                { italian: "Chiudere", english: "To close" },
+                { italian: "La mattina", english: "The morning" },
+                { italian: "Il pomeriggio", english: "The afternoon" },
+                { italian: "La sera", english: "The evening" },
+                { italian: "La notte", english: "The night" },
+                { italian: "Oggi", english: "Today" },
+                { italian: "Domani", english: "Tomorrow" },
+                { italian: "Ieri", english: "Yesterday" },
+                { italian: "Lunedì", english: "Monday" },
+                { italian: "Martedì", english: "Tuesday" },
+                { italian: "Mercoledì", english: "Wednesday" },
+                { italian: "Giovedì", english: "Thursday" },
+                { italian: "Venerdì", english: "Friday" },
+                { italian: "Sabato", english: "Saturday" },
+                { italian: "Domenica", english: "Sunday" },
+                { italian: "Gennaio", english: "January" },
+                { italian: "Febbraio", english: "February" },
+                { italian: "Marzo", english: "March" },
+                { italian: "Aprile", english: "April" },
+                { italian: "Maggio", english: "May" },
+                { italian: "Giugno", english: "June" },
+                { italian: "Luglio", english: "July" },
+                { italian: "Agosto", english: "August" },
+                { italian: "Settembre", english: "September" },
+                { italian: "Ottobre", english: "October" },
+                { italian: "Novembre", english: "November" },
+                { italian: "Dicembre", english: "December" },
+                { italian: "Pane", english: "Bread" },
+                { italian: "Pasta", english: "Pasta" },
+                { italian: "Pizza", english: "Pizza" },
+                { italian: "Carne", english: "Meat" },
+                { italian: "Pesce", english: "Fish" },
+                { italian: "Verdura", english: "Vegetables" },
+                { italian: "Frutta", english: "Fruit" },
+                { italian: "Formaggio", english: "Cheese" },
+                { italian: "Uova", english: "Eggs" },
+                { italian: "Riso", english: "Rice" },
+                { italian: "Pollo", english: "Chicken" },
+                { italian: "Manzo", english: "Beef" },
+                { italian: "Maiale", english: "Pork" },
+                { italian: "Insalata", english: "Salad" },
+                { italian: "Pomodoro", english: "Tomato" },
+                { italian: "Patata", english: "Potato" },
+                { italian: "Carota", english: "Carrot" },
+                { italian: "Cipolla", english: "Onion" },
+                { italian: "Mela", english: "Apple" },
+                { italian: "Arancia", english: "Orange" },
+                { italian: "Banana", english: "Banana" },
+                { italian: "Acqua", english: "Water" },
+                { italian: "Vino", english: "Wine" },
+                { italian: "Birra", english: "Beer" },
+                { italian: "Caffè", english: "Coffee" },
+                { italian: "Tè", english: "Tea" },
+                { italian: "Latte", english: "Milk" },
+                { italian: "Succo", english: "Juice" },
+                { italian: "Colazione", english: "Breakfast" },
+                { italian: "Pranzo", english: "Lunch" },
+                { italian: "Cena", english: "Dinner" },
+                { italian: "Vorrei", english: "I would like" },
+                { italian: "Il conto", english: "The bill" },
+                { italian: "Il menu", english: "The menu" },
+                { italian: "Un tavolo", english: "A table" },
+                { italian: "Il bagno", english: "The bathroom" },
+                { italian: "Quanto costa?", english: "How much does it cost?" },
+                { italian: "Dov'è?", english: "Where is it?" },
+                { italian: "Cos'è?", english: "What is it?" },
+                { italian: "Casa", english: "House/Home" },
+                { italian: "Strada", english: "Street" },
+                { italian: "Città", english: "City" },
+                { italian: "Paese", english: "Country/Village" },
+                { italian: "Scuola", english: "School" },
+                { italian: "Università", english: "University" },
+                { italian: "Ospedale", english: "Hospital" },
+                { italian: "Ristorante", english: "Restaurant" },
+                { italian: "Bar", english: "Bar/Café" },
+                { italian: "Negozio", english: "Shop" },
+                { italian: "Supermercato", english: "Supermarket" },
+                { italian: "Farmacia", english: "Pharmacy" },
+                { italian: "Banca", english: "Bank" },
+                { italian: "Ufficio", english: "Office" },
+                { italian: "Stazione", english: "Station" },
+                { italian: "Aeroporto", english: "Airport" },
+                { italian: "Andare", english: "To go" },
+                { italian: "Venire", english: "To come" },
+                { italian: "Fare", english: "To do/make" },
+                { italian: "Dire", english: "To say" },
+                { italian: "Dare", english: "To give" },
+                { italian: "Stare", english: "To stay" },
+                { italian: "Vedere", english: "To see" },
+                { italian: "Sapere", english: "To know (facts)" },
+                { italian: "Conoscere", english: "To know (people/places)" },
+                { italian: "Volere", english: "To want" },
+                { italian: "Potere", english: "To be able to" },
+                { italian: "Dovere", english: "To have to/must" },
+                { italian: "Grande", english: "Big" },
+                { italian: "Piccolo", english: "Small" },
+                { italian: "Alto", english: "Tall/High" },
+                { italian: "Basso", english: "Short/Low" },
+                { italian: "Bello", english: "Beautiful/Nice" },
+                { italian: "Brutto", english: "Ugly" },
+                { italian: "Buono", english: "Good" },
+                { italian: "Cattivo", english: "Bad" },
+                { italian: "Nuovo", english: "New" },
+                { italian: "Vecchio", english: "Old" },
+                { italian: "Giovane", english: "Young" },
+                { italian: "Caldo", english: "Hot/Warm" },
+                { italian: "Freddo", english: "Cold" },
+                { italian: "Felice", english: "Happy" },
+                { italian: "Triste", english: "Sad" },
+                { italian: "Stanco", english: "Tired" },
+                { italian: "Malato", english: "Sick" },
+                { italian: "Sano", english: "Healthy" },
+                { italian: "Rosso", english: "Red" },
+                { italian: "Blu", english: "Blue" },
+                { italian: "Verde", english: "Green" },
+                { italian: "Giallo", english: "Yellow" },
+                { italian: "Nero", english: "Black" },
+                { italian: "Bianco", english: "White" },
+                { italian: "Sempre", english: "Always" },
+                { italian: "Mai", english: "Never" },
+                { italian: "Spesso", english: "Often" },
+                { italian: "Qualche volta", english: "Sometimes" },
+                { italian: "Raramente", english: "Rarely" },
+                { italian: "Molto", english: "Very/Much" },
+                { italian: "Poco", english: "Little/Few" },
+                { italian: "Troppo", english: "Too much" },
+                { italian: "Abbastanza", english: "Enough" },
+                { italian: "Più", english: "More" },
+                { italian: "Meno", english: "Less" },
+                { italian: "Bene", english: "Well" },
+                { italian: "Male", english: "Badly" },
+                { italian: "Presto", english: "Soon/Early" },
+                { italian: "Tardi", english: "Late" },
+                { italian: "Adesso", english: "Now" },
+                { italian: "Ancora", english: "Still/Again" },
+                { italian: "Già", english: "Already" },
+                { italian: "Anche", english: "Also/Too" },
+                { italian: "Solo", english: "Only" }
+            ];
+            
+            if (cards.length === 0) {
+                cards = basicCards.map(card => ({
+                    ...card,
+                    interval: 0,
+                    nextReview: new Date().toISOString(),
+                    easeFactor: 2.5
+                }));
+                localStorage.setItem(userKey('flashcards'), JSON.stringify(cards));
+            }
+            
+            updateFlashcardDeck();
+        }
+
+        function updateFlashcardDeck() {
+            if (!currentUser) {
+                document.getElementById('flashcardSection').style.display = 'none';
+                return;
+            }
+
+            const cards = JSON.parse(localStorage.getItem(userKey('flashcards'))) || [];
+            const now = new Date();
+
+            flashcardDeck = cards.filter(card => new Date(card.nextReview) <= now);
+
+            document.getElementById('flashcardSection').style.display = 'block';
+            document.getElementById('dueCount').textContent = flashcardDeck.length;
+            document.getElementById('flashcardsLearned').textContent =
+                cards.filter(c => c.interval >= 1).length;
+
+            const textEl = document.getElementById('flashcardText');
+            document.getElementById('flashcardButtons').style.display = 'none';
+            document.getElementById('recognitionResult').innerHTML = '';
+
+            if (flashcardDeck.length > 0) {
+                currentFlashcard = flashcardDeck[0];
+                isFlashcardFlipped = false;
+                textEl.textContent = currentFlashcard.italian;
+            } else if (cards.length > 0) {
+                currentFlashcard = null;
+                textEl.textContent = "All caught up! 🎉 Review again tomorrow.";
+            } else {
+                currentFlashcard = null;
+                textEl.textContent = "Click to start";
+            }
+        }
+
+        function loadNextCard() {
+            document.getElementById('recognitionResult').innerHTML = '';
+            
+            if (flashcardDeck.length === 0) {
+                currentFlashcard = null;
+                document.getElementById('flashcardText').textContent = "All done! 🎉";
+                document.getElementById('flashcardButtons').style.display = 'none';
+                setTimeout(() => updateFlashcardDeck(), 2000);
+                return;
+            }
+            
+            currentFlashcard = flashcardDeck[0];
+            isFlashcardFlipped = false;
+            document.getElementById('flashcardText').textContent = currentFlashcard.italian;
+            document.getElementById('flashcardButtons').style.display = 'none';
+        }
+
+        function flipCard() {
+            if (!currentFlashcard) {
+                updateFlashcardDeck();
+                return;
+            }
+            
+            isFlashcardFlipped = !isFlashcardFlipped;
+            const textEl = document.getElementById('flashcardText');
+            textEl.textContent = isFlashcardFlipped ? currentFlashcard.english : currentFlashcard.italian;
+            
+            const buttonsEl = document.getElementById('flashcardButtons');
+            if (isFlashcardFlipped) {
+                buttonsEl.style.display = 'flex';
+            } else {
+                buttonsEl.style.display = 'none';
+            }
+        }
+
+        function speakFlashcard() {
+            if (currentFlashcard && !isFlashcardFlipped) {
+                speakItalian(currentFlashcard.italian, 0.65);
+            }
+        }
+
+        function recognizeFlashcard() {
+            if (!recognition || !currentFlashcard || isFlashcardFlipped) return;
+            
+            const micBtn = document.getElementById('micBtn');
+            micBtn.disabled = true;
+            micBtn.textContent = '⏺️';
+            
+            recognition.onresult = (event) => {
+                const transcript = event.results[0][0].transcript.toLowerCase();
+                const target = currentFlashcard.italian.toLowerCase();
+                
+                const isMatch = transcript.includes(target.replace(/[.,!?]/g, '')) || 
+                               target.includes(transcript.replace(/[.,!?]/g, ''));
+                
+                const resultDiv = document.getElementById('recognitionResult');
+                if (isMatch) {
+                    resultDiv.innerHTML = `<div class="recognition-result"><span class="recognition-match">✓ Great!</span> You said: "${transcript}"</div>`;
+                    addXP(5);
+                } else {
+                    resultDiv.innerHTML = `<div class="recognition-result"><span class="recognition-nomatch">Try again!</span> You said: "${transcript}"<br>Target: "${currentFlashcard.italian}"</div>`;
+                }
+            };
+            
+            recognition.onend = () => {
+                micBtn.disabled = false;
+                micBtn.textContent = '🎤';
+            };
+            
+            recognition.start();
+        }
+
+        function rateCard(difficulty) {
+            if (!currentFlashcard || !currentUser) return;
+            
+            const cards = JSON.parse(localStorage.getItem(userKey('flashcards'))) || [];
+            const cardIndex = cards.findIndex(c => c.italian === currentFlashcard.italian);
+            
+            if (cardIndex === -1) return;
+            
+            const card = cards[cardIndex];
+            const now = new Date();
+            
+            let newInterval = 0;
+            let newEaseFactor = card.easeFactor;
+            
+            switch(difficulty) {
+                case 1:
+                    newInterval = 0;
+                    newEaseFactor = Math.max(1.3, card.easeFactor - 0.2);
+                    break;
+                case 2:
+                    newInterval = Math.max(1, card.interval * 1.2);
+                    newEaseFactor = Math.max(1.3, card.easeFactor - 0.15);
+                    break;
+                case 3:
+                    newInterval = card.interval === 0 ? 1 : card.interval * card.easeFactor;
+                    break;
+                case 4:
+                    newInterval = card.interval === 0 ? 4 : card.interval * card.easeFactor * 1.3;
+                    newEaseFactor = card.easeFactor + 0.15;
+                    break;
+            }
+            
+            card.interval = newInterval;
+            card.easeFactor = newEaseFactor;
+            card.nextReview = new Date(now.getTime() + newInterval * 24 * 60 * 60 * 1000).toISOString();
+            
+            cards[cardIndex] = card;
+            localStorage.setItem(userKey('flashcards'), JSON.stringify(cards));
+            
+            addXP(difficulty === 4 ? 3 : difficulty === 3 ? 2 : 1);
+            
+            flashcardDeck.shift();
+            loadNextCard();
+            updateFlashcardDeck();
+        }
+
+        const quizData = {
+            1: [
+                {
+                    question: "How do you say 'Thank you' in Italian?",
+                    options: ["Prego", "Grazie", "Scusa", "Per favore"],
+                    correctIndex: 1
+                },
+                {
+                    question: "What does 'Come ti chiami?' mean?",
+                    options: ["How are you?", "What is your name?", "Where are you from?", "How old are you?"],
+                    correctIndex: 1
+                },
+                {
+                    question: "Choose the correct form of 'essere' (to be): Io ___ inglese",
+                    options: ["sei", "sono", "è", "siamo"],
+                    correctIndex: 1
+                }
+            ],
+            3: [
+                {
+                    question: "How do you say 'I have' in Italian?",
+                    options: ["Sono", "Hai", "Ho", "Ha"],
+                    correctIndex: 2
+                },
+                {
+                    question: "What is the Italian word for 'brother'?",
+                    options: ["Sorella", "Fratello", "Padre", "Madre"],
+                    correctIndex: 1
+                },
+                {
+                    question: "How do you say 'I am 25 years old'?",
+                    options: ["Sono 25 anni", "Ho 25 anni", "Hai 25 anni", "È 25 anni"],
+                    correctIndex: 1
+                }
+            ],
+            5: [
+                {
+                    question: "Which verb ending is used for regular -are verbs with 'io'?",
+                    options: ["-are", "-o", "-i", "-a"],
+                    correctIndex: 1
+                },
+                {
+                    question: "What does 'la mattina' mean?",
+                    options: ["The evening", "The afternoon", "The morning", "The night"],
+                    correctIndex: 2
+                },
+                {
+                    question: "Which day is 'mercoledì'?",
+                    options: ["Monday", "Tuesday", "Wednesday", "Thursday"],
+                    correctIndex: 2
+                }
+            ],
+            7: [
+                {
+                    question: "How do you politely order coffee in Italian?",
+                    options: ["Voglio caffè", "Vorrei un caffè, per favore", "Caffè adesso", "Prendo caffè"],
+                    correctIndex: 1
+                },
+                {
+                    question: "What does 'Quanto costa?' mean?",
+                    options: ["Where is it?", "What is it?", "How much does it cost?", "Do you have?"],
+                    correctIndex: 2
+                },
+                {
+                    question: "Which verb means 'to drink'?",
+                    options: ["Mangiare", "Bere", "Dormire", "Parlare"],
+                    correctIndex: 1
+                }
+            ],
+            9: [
+                {
+                    question: "What is the structure of passato prossimo?",
+                    options: ["Verb only", "Avere/Essere + past participle", "Future tense", "Present tense"],
+                    correctIndex: 1
+                },
+                {
+                    question: "Which auxiliary verb does 'andare' (to go) use in passato prossimo?",
+                    options: ["Avere", "Essere", "Both", "Neither"],
+                    correctIndex: 1
+                },
+                {
+                    question: "How do you say 'I ate' in Italian?",
+                    options: ["Ho mangiato", "Sono mangiato", "Mangio", "Mangiavo"],
+                    correctIndex: 0
+                }
+            ],
+            11: [
+                {
+                    question: "What does 'voglio' mean?",
+                    options: ["I can", "I must", "I want", "I would like"],
+                    correctIndex: 2
+                },
+                {
+                    question: "Which is more polite: voglio or vorrei?",
+                    options: ["Voglio", "Vorrei", "Both equal", "Neither"],
+                    correctIndex: 1
+                },
+                {
+                    question: "How do you say 'I must work tomorrow'?",
+                    options: ["Voglio lavorare domani", "Posso lavorare domani", "Devo lavorare domani", "Vorrei lavorare domani"],
+                    correctIndex: 2
+                }
+            ]
+        };
+
+        const weekData = {
+            1: {
+                phase: "Phase 1: Foundations",
+                title: "Week 1-2: Sounds &amp; Greetings",
+                overview: {
+                    topics: [
+                        "Italian pronunciation (vowels a, e, i, o, u; consonants ch, gh, gn, gl, sc)",
+                        "Greetings: Ciao, Buongiorno, Come stai?, Sto bene, Grazie, Prego",
+                        "Subject pronouns: io, tu, lui/lei, noi, voi, loro",
+                        "Essere (to be) - present tense"
+                    ],
+                    target: "15-20 new words/phrases"
+                },
+                days: {
+                    monday: {
+                        title: "Monday",
+                        focus: "Italian sounds &amp; pronunciation",
+                        steps: [
+                            "Play Coffee Break Italian S1E1 from 0:00-10:00",
+                            "Listen to vowel sounds (a, e, i, o, u) - each is pure and consistent",
+                            "Practice consonant combos: chi, che, ghi, ghe, gn, gl, sc",
+                            "Learn: Ciao, Buongiorno, Buonasera - say each 10 times aloud"
+                        ],
+                        links: [
+                            { text: "Coffee Break Italian S1E1", url: "https://podcasts.apple.com/us/podcast/coffee-break-italian/id958179457" },
+                            { text: "Italian Pronunciation (YouTube)", url: "https://www.youtube.com/watch?v=EG9x0eevbV4" }
+                        ]
+                    },
+                    tuesday: {
+                        title: "Tuesday",
+                        focus: "Basic greetings review",
+                        steps: [
+                            "Say yesterday's greetings from memory (no looking!)",
+                            "Learn: Come stai? (How are you?), Sto bene (I'm well), E tu?",
+                            "Practice mini-dialogue: 'Ciao! Come stai?' → 'Sto bene, grazie. E tu?'",
+                            "Record yourself - listen back and compare"
+                        ],
+                        links: [
+                            { text: "Forvo - Check Pronunciation", url: "https://forvo.com/languages/it/" }
+                        ]
+                    },
+                    wednesday: {
+                        title: "Wednesday",
+                        focus: "Introducing yourself",
+                        steps: [
+                            "Play Coffee Break Italian S1E2 from 0:00-10:00",
+                            "Learn: Come ti chiami? (What's your name?), Mi chiamo...",
+                            "Learn pronouns: io (I), tu (you), lui (he), lei (she)",
+                            "Say 'Mi chiamo [your name]' 15 times with different emotions"
+                        ],
+                        links: [
+                            { text: "Coffee Break Italian S1E2", url: "https://podcasts.apple.com/us/podcast/coffee-break-italian/id958179457" }
+                        ]
+                    },
+                    thursday: {
+                        title: "Thursday",
+                        focus: "Thank you &amp; please",
+                        steps: [
+                            "Review all previous greetings from memory",
+                            "Learn: Grazie (Thank you), Prego (You're welcome), Per favore (Please)",
+                            "Practice: 'Un caffè, per favore' - say it 10 times",
+                            "Role-play ordering something and saying thank you (both roles)"
+                        ],
+                        links: [
+                            { text: "Basic Italian Phrases", url: "https://www.youtube.com/watch?v=whFpRZaJj_w" }
+                        ]
+                    },
+                    friday: {
+                        title: "Friday",
+                        focus: "Essere (to be) - present tense",
+                        steps: [
+                            "Play Coffee Break Italian S1E3 from 0:00-10:00",
+                            "Learn: sono (I am), sei (you are), è (he/she is)",
+                            "Practice: Sono inglese (I'm English), Sei italiano?",
+                            "Make 5 'Sono...' sentences about yourself - say each 5 times"
+                        ],
+                        links: [
+                            { text: "Coffee Break Italian S1E3", url: "https://podcasts.apple.com/us/podcast/coffee-break-italian/id958179457" }
+                        ]
+                    },
+                    saturday: {
+                        title: "Saturday",
+                        focus: "Free practice &amp; conversation",
+                        steps: [
+                            "Have a greeting conversation with yourself (play both parts!)",
+                            "Practice: 'Ciao! Come ti chiami?' → 'Mi chiamo [name]. Sono inglese. E tu?'",
+                            "Add thank yous naturally throughout",
+                            "Record a 30-second self-introduction - save it!"
+                        ],
+                        links: []
+                    },
+                    sunday: {
+                        title: "Sunday",
+                        focus: "Weekly review &amp; consolidation",
+                        steps: [
+                            "List all greetings, phrases, and essere forms from memory",
+                            "Check each word's pronunciation on Forvo",
+                            "Count your vocabulary - aim for 15-20 words/phrases",
+                            "Record 1-minute self-introduction using everything learned"
+                        ],
+                        links: [
+                            { text: "Forvo - Check All Words", url: "https://forvo.com/languages/it/" }
+                        ]
+                    }
+                }
+            },
+            3: {
+                phase: "Phase 1: Foundations",
+                title: "Week 3-4: Talking About Yourself",
+                overview: {
+                    topics: [
+                        "Avere (to have) - present tense",
+                        "Nationalities, jobs, family members",
+                        "Numbers 1-30",
+                        "Basic adjectives with gender agreement"
+                    ],
+                    target: "20-25 new words/phrases"
+                },
+                days: {
+                    monday: {
+                        title: "Monday",
+                        focus: "Avere (to have)",
+                        steps: [
+                            "Play Coffee Break Italian S1E4 from 0:00-10:00",
+                            "Learn: ho (I have), hai (you have), ha (he/she has)",
+                            "Practice: Ho 30 anni, Hai fame?, Ho un fratello",
+                            "Make 5 'Ho...' sentences - say each 10 times"
+                        ],
+                        links: [
+                            { text: "Coffee Break Italian S1E4", url: "https://podcasts.apple.com/us/podcast/coffee-break-italian/id958179457" }
+                        ]
+                    },
+                    tuesday: {
+                        title: "Tuesday",
+                        focus: "Numbers 1-30",
+                        steps: [
+                            "Watch numbers video 0:00-7:00 only",
+                            "Learn 1-10: uno, due, tre, quattro, cinque, sei, sette, otto, nove, dieci",
+                            "Learn 11-30 (listen and repeat each 3 times)",
+                            "Say 'Ho [your age] anni' 15 times"
+                        ],
+                        links: [
+                            { text: "Italian Numbers Tutorial", url: "https://www.youtube.com/watch?v=7nnLjhgJOOU" }
+                        ]
+                    },
+                    wednesday: {
+                        title: "Wednesday",
+                        focus: "Nationalities",
+                        steps: [
+                            "Play Coffee Break Italian S1E5 from 0:00-10:00",
+                            "Learn: Sono inglese, italiano/italiana, francese, spagnolo",
+                            "Learn countries: Inghilterra, Italia, Francia, Spagna",
+                            "Practice: 'Sono inglese. Ho [age] anni.' - 10 times"
+                        ],
+                        links: [
+                            { text: "Coffee Break Italian S1E5", url: "https://podcasts.apple.com/us/podcast/coffee-break-italian/id958179457" }
+                        ]
+                    },
+                    thursday: {
+                        title: "Thursday",
+                        focus: "Jobs &amp; professions",
+                        steps: [
+                            "Review nationality + age from yesterday",
+                            "Learn: insegnante, studente, medico, ingegnere, allenatore",
+                            "Practice: 'Sono insegnante' or 'Lavoro come insegnante'",
+                            "Build full intro: name + age + nationality + job (say 5 times)"
+                        ],
+                        links: [
+                            { text: "Italian Jobs Vocabulary", url: "https://www.youtube.com/results?search_query=italian+jobs+vocabulary" }
+                        ]
+                    },
+                    friday: {
+                        title: "Friday",
+                        focus: "Family members",
+                        steps: [
+                            "Play Coffee Break Italian S1E6 from 0:00-10:00",
+                            "Learn: madre/mamma, padre/papà, fratello, sorella, figlio, figlia",
+                            "Practice: 'Ho un fratello e una sorella', 'Ho due sorelle'",
+                            "Describe YOUR family aloud for 2 minutes"
+                        ],
+                        links: [
+                            { text: "Coffee Break Italian S1E6", url: "https://podcasts.apple.com/us/podcast/coffee-break-italian/id958179457" }
+                        ]
+                    },
+                    saturday: {
+                        title: "Saturday",
+                        focus: "Adjectives",
+                        steps: [
+                            "Learn: alto/alta, basso/bassa, bello/bella, grande, piccolo",
+                            "Learn: giovane, vecchio, simpatico/simpatica",
+                            "Practice gender: 'Sono alto' (m) vs 'Sono alta' (f)",
+                            "Describe yourself and 2 family members with adjectives"
+                        ],
+                        links: [
+                            { text: "Italian Adjectives", url: "https://www.youtube.com/results?search_query=italian+adjectives+beginner" }
+                        ]
+                    },
+                    sunday: {
+                        title: "Sunday",
+                        focus: "Complete introduction",
+                        steps: [
+                            "Review everything from Weeks 1-4",
+                            "Build full intro: name, age, nationality, job, family, 1 adjective",
+                            "Practice complete intro 5 times without stopping",
+                            "Record yourself - aim for 1 minute continuous speaking"
+                        ],
+                        links: []
+                    }
+                }
+            },
+            5: {
+                phase: "Phase 1: Foundations",
+                title: "Week 5-6: Daily Life &amp; Routine",
+                overview: {
+                    topics: [
+                        "Regular -are verbs: parlare, mangiare, lavorare, abitare",
+                        "Time expressions: la mattina, il pomeriggio, la sera",
+                        "Days of the week &amp; months",
+                        "Simple sentence structure"
+                    ],
+                    target: "25-30 new words/phrases"
+                },
+                days: {
+                    monday: {
+                        title: "Monday",
+                        focus: "Regular -are verbs",
+                        steps: [
+                            "Play Coffee Break Italian S1E7 from 0:00-10:00",
+                            "Learn pattern: parlare → parlo, parli, parla",
+                            "Learn: parlare (speak), mangiare (eat), lavorare (work), abitare (live)",
+                            "Make 10 sentences with these verbs - say aloud"
+                        ],
+                        links: [
+                            { text: "Coffee Break Italian S1E7", url: "https://podcasts.apple.com/us/podcast/coffee-break-italian/id958179457" }
+                        ]
+                    },
+                    tuesday: {
+                        title: "Tuesday",
+                        focus: "Time expressions",
+                        steps: [
+                            "Say yesterday's verbs from memory",
+                            "Learn: la mattina, il pomeriggio, la sera, la notte",
+                            "Learn: oggi, domani, ieri",
+                            "Practice: 'La mattina mangio. La sera lavoro.' - 10 variations"
+                        ],
+                        links: [
+                            { text: "Italian Time Expressions", url: "https://www.youtube.com/results?search_query=italian+time+of+day" }
+                        ]
+                    },
+                    wednesday: {
+                        title: "Wednesday",
+                        focus: "Days of the week",
+                        steps: [
+                            "Play Coffee Break Italian S1E8 from 0:00-10:00",
+                            "Learn all days: lunedì through domenica",
+                            "Practice: 'Lunedì lavoro', 'Sabato non lavoro'",
+                            "Make 7 sentences - one for each day of YOUR week"
+                        ],
+                        links: [
+                            { text: "Coffee Break Italian S1E8", url: "https://podcasts.apple.com/us/podcast/coffee-break-italian/id958179457" }
+                        ]
+                    },
+                    thursday: {
+                        title: "Thursday",
+                        focus: "Daily routine",
+                        steps: [
+                            "Review: verbs + time + days",
+                            "Learn more verbs: ascoltare, studiare, guardare",
+                            "Build routine: 'La mattina mangio. Il pomeriggio lavoro. La sera studio.'",
+                            "Narrate YOUR actual morning routine in Italian"
+                        ],
+                        links: [
+                            { text: "Daily Routine Video", url: "https://www.youtube.com/results?search_query=italian+daily+routine+beginner" }
+                        ]
+                    },
+                    friday: {
+                        title: "Friday",
+                        focus: "Months",
+                        steps: [
+                            "Learn all months: gennaio through dicembre (listen and repeat)",
+                            "Practice: 'A gennaio lavoro', 'Ad agosto vado in vacanza'",
+                            "Note: months are lowercase in Italian!",
+                            "Say what you do in 4 different months"
+                        ],
+                        links: [
+                            { text: "Italian Months", url: "https://www.youtube.com/results?search_query=italian+months" }
+                        ]
+                    },
+                    saturday: {
+                        title: "Saturday",
+                        focus: "Weekly routine",
+                        steps: [
+                            "Describe your full week: 'Lunedì lavoro. Martedì...'",
+                            "Add time: 'Lunedì mattina lavoro. Lunedì sera studio.'",
+                            "Use ALL -are verbs you know",
+                            "Record 1-2 minutes describing typical week"
+                        ],
+                        links: []
+                    },
+                    sunday: {
+                        title: "Sunday",
+                        focus: "Review &amp; storytelling",
+                        steps: [
+                            "List all -are verbs from memory (aim for 8-10)",
+                            "Review time expressions, days, months",
+                            "Tell story: 'Questa settimana, lunedì ho lavorato...'",
+                            "Record yourself - natural flow, no stopping"
+                        ],
+                        links: []
+                    }
+                }
+            },
+            7: {
+                phase: "Phase 1: Foundations",
+                title: "Week 7-8: Food, Drink &amp; Restaurant",
+                overview: {
+                    topics: [
+                        "Food &amp; drink vocabulary",
+                        "Ordering at a restaurant",
+                        "Regular -ere and -ire verbs",
+                        "Asking questions"
+                    ],
+                    target: "30-40 new words/phrases"
+                },
+                days: {
+                    monday: {
+                        title: "Monday",
+                        focus: "Food vocabulary",
+                        steps: [
+                            "Learn foods: pane, pasta, pizza, carne, pesce, verdura, frutta",
+                            "Learn meals: colazione, pranzo, cena",
+                            "Practice: 'Mangio il pane', 'Mi piace la pasta'",
+                            "Use Forvo to hear each food word from native speaker"
+                        ],
+                        links: [
+                            { text: "Italian Food Words", url: "https://www.youtube.com/results?search_query=italian+food+vocabulary" },
+                            { text: "Forvo", url: "https://forvo.com/languages/it/" }
+                        ]
+                    },
+                    tuesday: {
+                        title: "Tuesday",
+                        focus: "Drinks",
+                        steps: [
+                            "Play Coffee Break Italian S1E9 from 0:00-10:00",
+                            "Learn: acqua, vino, birra, caffè, tè, latte, succo",
+                            "Learn verb bere: bevo, bevi, beve",
+                            "Practice: 'Bevo il caffè la mattina' - 10 times"
+                        ],
+                        links: [
+                            { text: "Coffee Break Italian S1E9", url: "https://podcasts.apple.com/us/podcast/coffee-break-italian/id958179457" }
+                        ]
+                    },
+                    wednesday: {
+                        title: "Wednesday",
+                        focus: "Ordering at restaurant",
+                        steps: [
+                            "Learn: Vorrei... (I would like), Per favore, Il conto",
+                            "Learn verb prendere: prendo, prendi, prende",
+                            "Practice: 'Vorrei un caffè, per favore'",
+                            "Role-play customer ordering (say both parts aloud)"
+                        ],
+                        links: [
+                            { text: "Restaurant Italian", url: "https://www.youtube.com/results?search_query=ordering+italian+restaurant" }
+                        ]
+                    },
+                    thursday: {
+                        title: "Thursday",
+                        focus: "Questions",
+                        steps: [
+                            "Play Coffee Break Italian S1E10 from 0:00-10:00",
+                            "Learn: Quanto costa?, Dov'è?, Cos'è?, C'è...?",
+                            "Learn: il bagno, il menu, un tavolo",
+                            "Practice asking 5 different questions aloud"
+                        ],
+                        links: [
+                            { text: "Coffee Break Italian S1E10", url: "https://podcasts.apple.com/us/podcast/coffee-break-italian/id958179457" }
+                        ]
+                    },
+                    friday: {
+                        title: "Friday",
+                        focus: "-ire verbs",
+                        steps: [
+                            "Learn: dormire, partire, sentire (regular pattern)",
+                            "Learn -isc verbs: capire, finire, preferire",
+                            "Practice: 'Dormo 8 ore', 'Capisco l'italiano'",
+                            "Make 10 sentences mixing -are, -ere, -ire verbs"
+                        ],
+                        links: [
+                            { text: "Italian -IRE Verbs", url: "https://www.youtube.com/results?search_query=italian+ire+verbs" }
+                        ]
+                    },
+                    saturday: {
+                        title: "Saturday",
+                        focus: "Restaurant role-play",
+                        steps: [
+                            "Review ALL food, drink, restaurant vocabulary",
+                            "Full dialogue: greeting → order food → order drink → ask for bill",
+                            "Play both waiter AND customer (switch roles)",
+                            "Record yourself - 2-3 minutes both roles"
+                        ],
+                        links: []
+                    },
+                    sunday: {
+                        title: "Sunday",
+                        focus: "Phase 1 checkpoint",
+                        steps: [
+                            "Review Phase 1 (Weeks 1-8): greetings, self, routine, food",
+                            "Test: Can you introduce yourself for 1 minute?",
+                            "Test: Can you order meal at restaurant?",
+                            "Record 2 minutes: intro + day + restaurant order"
+                        ],
+                        links: []
+                    }
+                }
+            },
+            9: {
+                phase: "Phase 2: Building Blocks",
+                title: "Week 9-10: Talking About the Past",
+                overview: {
+                    topics: [
+                        "Passato prossimo with avere",
+                        "Passato prossimo with essere",
+                        "Time markers: ieri, la settimana scorsa"
+                    ],
+                    target: "Build past tense fluency"
+                },
+                days: {
+                    monday: {
+                        title: "Monday",
+                        focus: "Passato prossimo (avere)",
+                        steps: [
+                            "Watch passato prossimo tutorial 0:00-10:00",
+                            "Learn structure: avere + past participle (-ato, -uto, -ito)",
+                            "Learn: ho mangiato, ho lavorato, ho parlato",
+                            "Make 10 past sentences with avere"
+                        ],
+                        links: [
+                            { text: "Passato Prossimo Tutorial", url: "https://www.youtube.com/results?search_query=passato+prossimo+italian+tutorial" },
+                            { text: "Italy Made Easy Podcast", url: "https://podcasts.apple.com/us/podcast/podcast-100-in-italiano-by-italy-made-easy/id1410851204" }
+                        ]
+                    },
+                    tuesday: {
+                        title: "Tuesday",
+                        focus: "Irregular participles",
+                        steps: [
+                            "Review yesterday's past tense",
+                            "Learn irregular: fatto (done), visto (seen), preso (taken)",
+                            "Practice: 'Ho fatto colazione', 'Ho visto un film'",
+                            "Tell what you did yesterday with 5 verbs"
+                        ],
+                        links: [
+                            { text: "Irregular Past Participles", url: "https://www.youtube.com/results?search_query=italian+irregular+past+participles" }
+                        ]
+                    },
+                    wednesday: {
+                        title: "Wednesday",
+                        focus: "Passato with essere",
+                        steps: [
+                            "Watch essere past tense video 0:00-10:00",
+                            "Learn: sono andato/a, sono uscito/a, sono arrivato/a",
+                            "Practice: 'Sono andato al lavoro' (note: -o/-a agreement)",
+                            "Make 5 sentences with essere past"
+                        ],
+                        links: [
+                            { text: "Essere vs Avere Past", url: "https://www.youtube.com/results?search_query=passato+prossimo+essere+avere" }
+                        ]
+                    },
+                    thursday: {
+                        title: "Thursday",
+                        focus: "Time markers",
+                        steps: [
+                            "Learn: ieri, ieri sera, ieri mattina",
+                            "Learn: la settimana scorsa, il mese scorso, l'anno scorso",
+                            "Practice: 'La settimana scorsa sono andato a Londra'",
+                            "Tell story about last week in past tense"
+                        ],
+                        links: [
+                            { text: "Italy Made Easy Episodes", url: "https://podcasts.apple.com/us/podcast/podcast-100-in-italiano-by-italy-made-easy/id1410851204" }
+                        ]
+                    },
+                    friday: {
+                        title: "Friday",
+                        focus: "Mixing avere &amp; essere",
+                        steps: [
+                            "Review which verbs use avere vs essere",
+                            "Complex sentences: 'Ieri ho lavorato e poi sono andato al cinema'",
+                            "Practice mixing: 'Ho mangiato e ho bevuto'",
+                            "Tell YOUR yesterday mixing both"
+                        ],
+                        links: [
+                            { text: "Past Tense Practice", url: "https://www.youtube.com/results?search_query=passato+prossimo+practice" }
+                        ]
+                    },
+                    saturday: {
+                        title: "Saturday",
+                        focus: "Weekend storytelling",
+                        steps: [
+                            "Tell what you did last weekend in detail",
+                            "Use at least 10 different past verbs",
+                            "Include time markers (sabato mattina, domenica sera)",
+                            "Record 2 minutes continuous past tense"
+                        ],
+                        links: []
+                    },
+                    sunday: {
+                        title: "Sunday",
+                        focus: "Past week narration",
+                        steps: [
+                            "Review all past tense from Weeks 9-10",
+                            "Describe entire week using passato prossimo",
+                            "Mix present and past: 'Di solito lavoro, ma ieri non ho lavorato'",
+                            "Record 2-3 minute story - no stopping"
+                        ],
+                        links: []
+                    }
+                }
+            },
+            11: {
+                phase: "Phase 2: Building Blocks",
+                title: "Week 11-12: Making Plans &amp; Expressing Wants",
+                overview: {
+                    topics: [
+                        "Future with present tense",
+                        "Modal verbs: voglio, posso, devo",
+                        "Conditional: vorrei",
+                        "Futuro semplice introduction"
+                    ],
+                    target: "Express plans and desires"
+                },
+                days: {
+                    monday: {
+                        title: "Monday",
+                        focus: "Present for future",
+                        steps: [
+                            "Learn: present tense + time marker = near future",
+                            "Practice: 'Domani vado al lavoro', 'Stasera mangio pasta'",
+                            "Learn markers: domani, stasera, la prossima settimana",
+                            "Make 10 sentences about tomorrow"
+                        ],
+                        links: [
+                            { text: "Italian Future Tense", url: "https://www.youtube.com/results?search_query=italian+future+tense" }
+                        ]
+                    },
+                    tuesday: {
+                        title: "Tuesday",
+                        focus: "Voglio (want)",
+                        steps: [
+                            "Learn voglio: voglio, vuoi, vuole, vogliamo, volete, vogliono",
+                            "Practice: 'Voglio mangiare', 'Voglio andare in Italia'",
+                            "Make 10 sentences about what you want",
+                            "Say each sentence 3 times with feeling!"
+                        ],
+                        links: [
+                            { text: "Modal Verbs Tutorial", url: "https://www.youtube.com/results?search_query=italian+modal+verbs" }
+                        ]
+                    },
+                    wednesday: {
+                        title: "Wednesday",
+                        focus: "Posso &amp; devo",
+                        steps: [
+                            "Learn posso (can): posso, puoi, può, possiamo, potete, possono",
+                            "Learn devo (must): devo, devi, deve, dobbiamo, dovete, devono",
+                            "Practice: 'Posso parlare', 'Devo lavorare domani'",
+                            "Tell what you can/must/want to do today"
+                        ],
+                        links: [
+                            { text: "Italy Made Easy Ep 11-15", url: "https://podcasts.apple.com/us/podcast/podcast-100-in-italiano-by-italy-made-easy/id1410851204" }
+                        ]
+                    },
+                    thursday: {
+                        title: "Thursday",
+                        focus: "Vorrei (polite)",
+                        steps: [
+                            "Learn vorrei (I would like) - politer than voglio",
+                            "Practice: 'Vorrei un caffè', 'Vorrei andare in Italia'",
+                            "Compare: voglio vs vorrei - when to use each",
+                            "Role-play polite requests"
+                        ],
+                        links: [
+                            { text: "Vorrei vs Voglio", url: "https://www.youtube.com/results?search_query=vorrei+voglio+italian" }
+                        ]
+                    },
+                    friday: {
+                        title: "Friday",
+                        focus: "Futuro semplice intro",
+                        steps: [
+                            "Watch future tense video 0:00-8:00",
+                            "Learn endings: -rò, -rai, -rà",
+                            "Learn: andrò, farò, sarò",
+                            "Compare: 'Vado' (present) vs 'Andrò' (future)"
+                        ],
+                        links: [
+                            { text: "Futuro Semplice", url: "https://www.youtube.com/results?search_query=futuro+semplice+italian" }
+                        ]
+                    },
+                    saturday: {
+                        title: "Saturday",
+                        focus: "Weekend plans",
+                        steps: [
+                            "Describe weekend plans with ALL future forms",
+                            "Mix: present, voglio/posso/devo, vorrei, andrò/farò",
+                            "Example: 'Voglio riposare. Sabato andrò al cinema. Devo lavorare.'",
+                            "Record 2 minutes planning next week"
+                        ],
+                        links: []
+                    },
+                    sunday: {
+                        title: "Sunday",
+                        focus: "Plans conversation",
+                        steps: [
+                            "Review all future forms",
+                            "Plan: tomorrow, next week, next month, next year",
+                            "Use mix of all forms learned",
+                            "Record 2-3 minutes about plans and dreams"
+                        ],
+                        links: []
+                    }
+                }
+            }
+        };
+
+        let currentUser = localStorage.getItem('currentUser') || '';
+        let allUsers = JSON.parse(localStorage.getItem('allUsers')) || [];
+        let completedDays = {};
+        let currentWeek = 1;
+        let currentQuizWeek = null;
+
+        function userKey(key) {
+            return currentUser ? currentUser + '_' + key : key;
+        }
+
+        function loadUserData() {
+            if (!currentUser) return;
+            
+            completedDays = JSON.parse(localStorage.getItem(userKey('completedDays'))) || {};
+            gamificationData = JSON.parse(localStorage.getItem(userKey('gamificationData'))) || {
+                xp: 0,
+                level: 1,
+                badges: []
+            };
+            
+            const savedWeek = localStorage.getItem(userKey('currentWeek'));
+            if (savedWeek) currentWeek = parseInt(savedWeek);
+            
+            updateProgress();
+            updateGamification();
+            renderWeek(currentWeek);
+            updateFlashcardDeck();
+        }
+
+        function saveUserData() {
+            if (!currentUser) return;
+            
+            localStorage.setItem(userKey('completedDays'), JSON.stringify(completedDays));
+            localStorage.setItem(userKey('gamificationData'), JSON.stringify(gamificationData));
+            localStorage.setItem(userKey('currentWeek'), currentWeek);
+        }
+
+        function populateUserSelect() {
+            const select = document.getElementById('userSelect');
+            select.innerHTML = '<option value="">Select user...</option>';
+            
+            allUsers.forEach(user => {
+                const option = document.createElement('option');
+                option.value = user;
+                option.textContent = user;
+                if (user === currentUser) option.selected = true;
+                select.appendChild(option);
+            });
+        }
+
+        function createUser() {
+            const input = document.getElementById('newUserInput');
+            const username = input.value.trim();
+            
+            if (!username) {
+                alert('Please enter a username');
+                return;
+            }
+            
+            if (allUsers.includes(username)) {
+                alert('Username already exists');
+                return;
+            }
+            
+            allUsers.push(username);
+            localStorage.setItem('allUsers', JSON.stringify(allUsers));
+            currentUser = username;
+            localStorage.setItem('currentUser', currentUser);
+            
+            input.value = '';
+            populateUserSelect();
+            loadUserData();
+        }
+
+        function openAIChat() {
+            const prompt = encodeURIComponent(
+                "You are a patient Italian tutor. Speak in simple Italian at A1/A2 level. " +
+                "Use short sentences, ask me lots of questions about daily life, and gently correct my Italian mistakes. " +
+                "Start by greeting me in Italian and asking how I am."
+            );
+            window.open("https://chat.openai.com/?q=" + prompt, "_blank");
+        }
+
+        function updateProgress() {
+            const totalDays = 168;
+            const completed = Object.keys(completedDays).length;
+            const percentage = Math.round((completed / totalDays) * 100);
+            
+            document.getElementById('progressBar').style.width = percentage + '%';
+            document.getElementById('progressBar').textContent = percentage + '%';
+            document.getElementById('daysCompleted').textContent = completed;
+            document.getElementById('totalMinutes').textContent = completed * 10;
+            
+            const streak = calculateStreak();
+            document.getElementById('currentStreak').textContent = streak;
+            
+            updateGamification();
+            saveUserData();
+        }
+
+        function openQuiz(weekNum) {
+            currentQuizWeek = weekNum;
+            const quiz = quizData[weekNum];
+            const modal = document.getElementById('quizModal');
+            const title = document.getElementById('quizTitle');
+            const content = document.getElementById('quizContent');
+            const result = document.getElementById('quizResult');
+
+            if (!quiz) {
+                content.innerHTML = '<p>Quiz coming soon for this week!</p>';
+            } else {
+                title.textContent = `Week ${weekNum} Quiz - Test Your Knowledge`;
+                result.textContent = '';
+                content.innerHTML = quiz.map((q, qi) => `
+                    <div class="quiz-question">
+                        <div class="quiz-question-text">${qi + 1}. ${q.question}</div>
+                        ${q.options.map((opt, oi) => `
+                            <label class="quiz-option">
+                                <input type="radio" name="q${qi}" value="${oi}"> ${opt}
+                            </label>
+                        `).join('')}
+                    </div>
+                `).join('');
+            }
+
+            modal.style.display = 'block';
+        }
+
+        function closeQuiz() {
+            document.getElementById('quizModal').style.display = 'none';
+        }
+
+        function checkQuiz() {
+            const quiz = quizData[currentQuizWeek];
+            if (!quiz) return;
+            
+            let score = 0;
+            quiz.forEach((q, qi) => {
+                const selected = document.querySelector(`input[name="q${qi}"]:checked`);
+                if (selected && parseInt(selected.value) === q.correctIndex) {
+                    score++;
+                }
+            });
+
+            const result = document.getElementById('quizResult');
+            const percentage = Math.round((score / quiz.length) * 100);
+            
+            if (percentage === 100) {
+                result.textContent = `🎉 Perfect! ${score}/${quiz.length} - You've mastered this week!`;
+                result.style.color = 'var(--color-success)';
+                localStorage.setItem(`quiz_week${currentQuizWeek}`, 'passed');
+                addXP(25);
+            } else if (percentage >= 66) {
+                result.textContent = `👍 Good job! ${score}/${quiz.length} - Keep practicing!`;
+                result.style.color = 'var(--color-primary)';
+                addXP(15);
+            } else {
+                result.textContent = `📚 ${score}/${quiz.length} - Review this week's material and try again!`;
+                result.style.color = 'var(--color-secondary)';
+                addXP(5);
+            }
+            
+            updateGamification();
+        }
+
+        function renderWeek(weekNum) {
+            currentWeek = weekNum;
+            const data = weekData[weekNum];
+            if (!data) return;
+
+            document.getElementById('phaseIndicator').textContent = data.phase;
+
+            let html = `
+                <div class="quick-links">
+                    <h3>📚 Quick Access Resources</h3>
+                    <a href="https://coffeebreaklanguages.com/coffee-break-italian/" class="resource-link" target="_blank">Coffee Break Italian</a>
+                    <a href="https://ankiweb.net/" class="resource-link" target="_blank">Anki App</a>
+                    <a href="https://forvo.com/languages/it/" class="resource-link" target="_blank">Forvo</a>
+                    <a href="https://www.youtube.com/@lucrezia" class="resource-link secondary" target="_blank">Lucrezia</a>
+                    <a href="https://www.youtube.com/@EasyItalian" class="resource-link secondary" target="_blank">Easy Italian</a>
+                </div>
+
+                <div class="week-overview">
+                    <h3>${data.title}</h3>
+                    <p><strong>Topics:</strong></p>
+                    <ul>
+                        ${data.overview.topics.map(t => `<li>${t}</li>`).join('')}
+                    </ul>
+                    <p style="margin-top: 15px;"><strong>Target:</strong> ${data.overview.target}</p>
+                </div>
+
+                <button class="quiz-btn" onclick="openQuiz(${weekNum})">
+                    📝 Take Week ${weekNum} Quiz (3 questions)
+                </button>
+                
+                <button class="quiz-btn" onclick="openAIChat()" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); margin-top: 10px;">
+                    💬 Practice with AI Tutor (ChatGPT)
+                </button>
+            `;
+
+            const days = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'];
+            
+            days.forEach(day => {
+                const dayData = data.days[day];
+                const dayKey = `week${weekNum}_${day}`;
+                const isCompleted = completedDays[dayKey];
+
+                html += `
+                    <div class="day-card ${isCompleted ? 'completed' : ''}" id="${dayKey}">
+                        <div class="day-header">
+                            <div class="day-title">${dayData.title}</div>
+                            <button class="complete-btn ${isCompleted ? 'completed' : ''}" onclick="toggleDay('${dayKey}')">
+                                ${isCompleted ? '✓ Done' : 'Mark Done'}
+                            </button>
+                        </div>
+                        
+                        <div class="activity-steps">
+                            <h4>🎯 ${dayData.focus}</h4>
+                            ${dayData.steps.map((s, idx) => {
+                                return `<div class="step" id="${dayKey}_step${idx}">${s}</div>`;
+                            }).join('')}
+                        </div>
+
+                        ${dayData.links.length > 0 ? `
+                            <div style="margin-top: 12px;">
+                                <strong style="font-size: 0.85rem;">📖 Resources:</strong><br>
+                                ${dayData.links.map(l => `<a href="${l.url}" class="resource-link" target="_blank" rel="noopener">${l.text}</a>`).join('')}
+                            </div>
+                        ` : ''}
+
+                        <div class="notes-section">
+                            <label style="display: block; margin-bottom: 8px; font-weight: 600; font-size: 0.85rem;">📝 Notes:</label>
+                            <textarea id="notes_${dayKey}" placeholder="New words, phrases, observations...">${localStorage.getItem('notes_' + dayKey) || ''}</textarea>
+                        </div>
+                    </div>
+                `;
+            });
+
+            document.getElementById('weekContent').innerHTML = html;
+
+            const dayCards = document.querySelectorAll('.day-card');
+            dayCards.forEach(card => enhancePronunciationSteps(card));
+
+            days.forEach(day => {
+                const dayKey = `week${weekNum}_${day}`;
+                const textarea = document.getElementById('notes_' + dayKey);
+                if (textarea) {
+                    textarea.addEventListener('blur', function() {
+                        localStorage.setItem('notes_' + dayKey, this.value);
+                    });
+                }
+            });
+        }
+
+        function toggleDay(dayKey) {
+            if (!currentUser) {
+                alert('Please select or create a user first');
+                return;
+            }
+            
+            const wasCompleted = completedDays[dayKey];
+            
+            if (wasCompleted) {
+                delete completedDays[dayKey];
+            } else {
+                completedDays[dayKey] = new Date().toISOString();
+                
+                addXP(10);
+                
+                const streak = calculateStreak();
+                if (streak > 0) {
+                    addXP(streak >= 7 ? 5 : 2);
+                }
+            }
+            
+            saveUserData();
+            updateProgress();
+            renderWeek(currentWeek);
+        }
+
+        document.getElementById('weekSelect').addEventListener('change', function() {
+            currentWeek = parseInt(this.value);
+            renderWeek(currentWeek);
+            if (currentUser) {
+                localStorage.setItem(userKey('currentWeek'), currentWeek);
+            }
+        });
+
+        document.getElementById('userSelect').addEventListener('change', function() {
+            currentUser = this.value;
+            if (currentUser) {
+                localStorage.setItem('currentUser', currentUser);
+                loadUserData();
+            }
+        });
+
+        function speakInstruction(dayKey, stepIdx) {
+            const stepText = document.getElementById(dayKey + '_step' + stepIdx).textContent;
+            
+            const match = stepText.match(/Learn:\s*(.+)$/i) ||
+                          stepText.match(/Practice:\s*(.+)$/i) ||
+                          stepText.match(/'([^']+)'/) ||
+                          stepText.match(/"([^"]+)"/);
+
+            if (!match) return;
+
+            const italian = match[1].trim();
+            if (!italian) return;
+
+            speakItalian(italian, 0.65);
+        }
+
+        function enhancePronunciationSteps(container) {
+            const steps = container.querySelectorAll('.step');
+
+            steps.forEach(step => {
+                const text = step.textContent;
+
+                const match = text.match(/Learn:\s*(.+)$/i) ||
+                              text.match(/Practice:\s*(.+)$/i) ||
+                              text.match(/'([^']+)'/) ||
+                              text.match(/"([^"]+)"/);
+
+                if (!match) return;
+
+                const italian = match[1].trim();
+                if (!italian) return;
+
+                const btn = document.createElement('button');
+                btn.className = 'speech-btn';
+                btn.type = 'button';
+                btn.textContent = '🔊';
+                btn.title = 'Ascolta la frase';
+                btn.style.cssText = 'width: 30px; height: 30px; font-size: 1rem; margin-left: 8px;';
+
+                btn.onclick = (e) => {
+                    e.stopPropagation();
+                    speakItalian(italian, 0.65);
+                };
+
+                step.appendChild(btn);
+            });
+        }
+
+        initSpeechRecognition();
+        showDailyPhrase();
+        populateUserSelect();
+        
+        if (allUsers.length === 0) {
+            alert('Welcome! Please create a user account to start learning Italian.');
+        } else if (currentUser && allUsers.includes(currentUser)) {
+            loadUserData();
+        } else if (allUsers.length > 0) {
+            currentUser = allUsers[0];
+            localStorage.setItem('currentUser', currentUser);
+            loadUserData();
+        }
+    </script>
+</body>
+</html>
